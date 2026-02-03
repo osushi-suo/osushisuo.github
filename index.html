@@ -1,0 +1,251 @@
+# osushisuo.github
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>二郎コール提案システム</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; line-height: 1.6; margin: 24px; }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    h1 { margin: 0 0 12px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
+    .q { margin: 10px 0 6px; font-weight: 600; }
+    select { width: 100%; max-width: 520px; padding: 8px; border-radius: 8px; border: 1px solid #bbb; }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #444; background: #111; color: #fff; cursor: pointer; }
+    button:active { transform: translateY(1px); }
+    .result { background: #f7f7f7; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .muted { color: #555; font-size: 0.95em; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    ul { margin: 6px 0 0 18px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>二郎コール提案システム</h1>
+    <p class="muted">設問に回答すると、「購入する食券」と「コール」を自動で提案します。</p>
+
+    <div class="card">
+      <div class="q">設問1. 今回食べに行く店舗のラーメンの量</div>
+      <select id="q1">
+        <option value="3">3：多め（八王子野猿街道2店、府中店など）</option>
+        <option value="2" selected>2：普通</option>
+        <option value="1">1：少な目（三田本店、新宿歌舞伎町店など）</option>
+      </select>
+
+      <div class="q">設問2. 普通のラーメン屋でどのくらい食べるか</div>
+      <select id="q2">
+        <option value="4">4：大盛は余裕</option>
+        <option value="3" selected>3：大盛で満腹</option>
+        <option value="2">2：普通盛で満腹</option>
+        <option value="1">1：普通盛でも残す</option>
+      </select>
+
+      <div class="q">設問3. ニンニクの量</div>
+      <select id="q3">
+        <option value="4">4：多め</option>
+        <option value="3" selected>3：普通</option>
+        <option value="2">2：少な目</option>
+        <option value="1">1：いらない</option>
+      </select>
+
+      <div class="q">設問4. ヤサイの量</div>
+      <select id="q4">
+        <option value="4" selected>4：多め</option>
+        <option value="3">3：普通</option>
+        <option value="2">2：少な目</option>
+        <option value="1">1：いらない</option>
+      </select>
+
+      <div class="q">設問5. アブラの量</div>
+      <select id="q5">
+        <option value="4" selected>4：多め</option>
+        <option value="3">3：普通</option>
+        <option value="2">2：少な目</option>
+        <option value="1">1：いらない</option>
+      </select>
+
+      <div class="q">設問6. 味の濃さ（カラメ）</div>
+      <select id="q6">
+        <option value="3">3：濃いめ</option>
+        <option value="2" selected>2：普通</option>
+        <option value="1">1：薄め</option>
+      </select>
+
+      <div class="row" style="margin-top:14px;">
+        <button id="run">提案を出す</button>
+        <span class="muted">※結果は下に表示されます</span>
+      </div>
+    </div>
+
+    <div class="card result">
+      <h2 style="margin-top:0;">結果</h2>
+      <div id="out"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0;">仕様メモ</h2>
+      <ul>
+        <li>食券：設問1（列）×設問2（行）の表で決定</li>
+        <li>ヤサイ：設問4に加えて、設問1×設問2の表で補正（指定の対応表どおり）</li>
+        <li>コール特例：設問3〜5が全て4→「全マシ」、全て2→「全部少なめ」、全て1→「全抜き」</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // ===== ユーティリティ =====
+    const v = (id) => parseInt(document.getElementById(id).value, 10);
+
+    // ===== 実装2: 食券（設問1×設問2） =====
+    // 設問1が「列」、設問2が「行」
+    // q1: 3/2/1, q2: 4/3/2/1
+    const ticketTable = {
+      // row = q2
+      4: { 3: "小ラーメン",             2: "小ラーメン",             1: "小ラーメン" },
+      3: { 3: "小ラーメン麺少なめ",     2: "小ラーメン",             1: "小ラーメン" },
+      2: { 3: "ミニラーメン麺少なめor半分", 2: "ミニラーメン麺少なめ", 1: "ミニラーメン麺少なめ" },
+      1: { 3: "ミニラーメン麺半分",     2: "ミニラーメン麺半分",     1: "ミニラーメン少なめor半分" },
+    };
+
+    function decideTicket(q1, q2) {
+      // q2行 -> q1列
+      const row = ticketTable[q2];
+      if (!row || !row[q1]) return "（食券が決められませんでした）";
+      return row[q1];
+    }
+
+    // ===== 実装2: ニンニク（設問3） =====
+    const ninnikuText = {
+      4: "ニンニクマシ",
+      3: "ニンニク",
+      2: "ニンニク少なめ",
+      1: "ニンニク抜き",
+    };
+
+    // ===== 実装2: ヤサイ（設問4 + 設問1×2） =====
+    // 指定表に従い「テキストなし」もあり得る
+    const yasaiTableWhen4 = {
+      // q4=4 のとき（多め）
+      // row=q2, col=q1
+      4: { 3: "ヤサイ",         2: "ヤサイ",         1: "ヤサイ" },
+      3: { 3: "",               2: "",               1: "ヤサイ" },
+      2: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "" },
+      1: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "ヤサイ少なめ" },
+    };
+
+    const yasaiTableWhen3 = {
+      // q4=3 のとき（普通）
+      // row=q2, col=q1
+      4: { 3: "",               2: "",               1: "" },
+      3: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "" },
+      2: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "ヤサイ少なめ" },
+      1: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "ヤサイ少なめ" },
+    };
+
+    function decideYasai(q1, q2, q4) {
+      if (q4 === 2) return "ヤサイ少なめ";
+      if (q4 === 1) return "ヤサイ抜き";
+
+      if (q4 === 4) {
+        const row = yasaiTableWhen4[q2];
+        return (row && (q1 in row)) ? row[q1] : "";
+      }
+      if (q4 === 3) {
+        const row = yasaiTableWhen3[q2];
+        return (row && (q1 in row)) ? row[q1] : "";
+      }
+      return "";
+    }
+
+    // ===== 実装2: アブラ（設問5） =====
+    const aburaText = {
+      4: "アブラ",
+      3: "",
+      2: "アブラ少なめ",
+      1: "アブラ抜き",
+    };
+
+    // ===== 実装2: カラメ（設問6） =====
+    const karameText = {
+      3: "カラメ",
+      2: "",
+      1: "カラメ少なめ",
+    };
+
+    // ===== 実装3: コールの組み立て（特例あり） =====
+    function buildCall(q1, q2, q3, q4, q5, q6) {
+      // 特例：設問3〜5が同一
+      if (q3 === 4 && q4 === 4 && q5 === 4) {
+        // 全マシ（ただしカラメは別枠で足す）
+        const parts = ["全マシ"];
+        const k = karameText[q6] || "";
+        if (k) parts.push(k);
+        return parts.join("");
+      }
+      if (q3 === 2 && q4 === 2 && q5 === 2) {
+        const parts = ["全部少なめ"];
+        const k = karameText[q6] || "";
+        if (k) parts.push(k);
+        return parts.join("");
+      }
+      if (q3 === 1 && q4 === 1 && q5 === 1) {
+        const parts = ["全抜き"];
+        const k = karameText[q6] || "";
+        if (k) parts.push(k);
+        return parts.join("");
+      }
+
+      // 通常：ニンニク + ヤサイ（補正） + アブラ + カラメ を「テキストなし」は除いて連結
+      const parts = [];
+
+      const n = ninnikuText[q3] || "";
+      if (n) parts.push(n);
+
+      const y = decideYasai(q1, q2, q4); // q4=3,4は表で""になり得る
+      if (y) parts.push(y);
+
+      const a = aburaText[q5] || "";
+      if (a) parts.push(a);
+
+      const k = karameText[q6] || "";
+      if (k) parts.push(k);
+
+      return parts.join("");
+    }
+
+    // ===== UI: 実行 =====
+    document.getElementById("run").addEventListener("click", () => {
+      const q1 = v("q1");
+      const q2 = v("q2");
+      const q3 = v("q3");
+      const q4 = v("q4");
+      const q5 = v("q5");
+      const q6 = v("q6");
+
+      const ticket = decideTicket(q1, q2);
+      const call = buildCall(q1, q2, q3, q4, q5, q6);
+
+      const html = `
+        <div class="muted">入力（数値）</div>
+        <ul>
+          <li>設問1（店の量）：<span class="mono">${q1}</span></li>
+          <li>設問2（普段の食べる量）：<span class="mono">${q2}</span></li>
+          <li>設問3（ニンニク）：<span class="mono">${q3}</span></li>
+          <li>設問4（ヤサイ）：<span class="mono">${q4}</span></li>
+          <li>設問5（アブラ）：<span class="mono">${q5}</span></li>
+          <li>設問6（カラメ）：<span class="mono">${q6}</span></li>
+        </ul>
+        <hr />
+        <div><strong>購入する食券：</strong>${ticket}</div>
+        <div><strong>コール：</strong>${call || "（なし）"}</div>
+        <p class="muted" style="margin-top:8px;">
+          ※ヤサイは設問4に加えて、設問1×2の表で「テキストなし」になる場合があります。
+        </p>
+      `;
+      document.getElementById("out").innerHTML = html;
+    });
+  </script>
+</body>
+</html>
