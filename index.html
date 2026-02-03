@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>二郎コール提案システム</title>
+  <title>ramen_call</title>
   <style>
     body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; line-height: 1.6; margin: 24px; }
     .wrap { max-width: 880px; margin: 0 auto; }
@@ -23,15 +23,31 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>二郎コール提案システム</h1>
-    <p class="muted">設問に回答すると、「購入する食券」と「コール」を自動で提案します。</p>
+    <h1>二郎（系）の手引き</h1>
+    <p class="muted">設問に回答すると、あなたに合わせた「購入する食券」と「コール」を提案します。</p>
 
+    <p class="notice">
+     <h3>注意事項</h3>
+      本サイトは製作者の主観で作成した目安になります
+      初めての人向けに制作したので、大ラーメンやマシマシは対象外です
+      「歴史を刻め」や「ラーメン大」ではコールの仕方が異なるので、注意してください
+      <span style="color: #d32f2f;">麺の量は食券を見せる際にに店員さんに伝えてください</span>
+      <span style="color: #d32f2f;">コールは「ニンニク入れますか」と言われたときに答えるようにしてください</span>
+      サイト改善のため、アンケートにご協力いただければ幸いです→https://forms.gle/5jd5PcMfiToTxVs7A
+    </p>
+    <p class="notice">
+     <h3>ラーメンの量の目安（食べたことある店舗だけ）</h3>
+      多め：八王子野猿街道2店、府中店
+      普通：それ以外
+      少なめ：三田本店、新宿歌舞伎町店など
+    </p>
+    
     <div class="card">
       <div class="q">設問1. 今回食べに行く店舗のラーメンの量</div>
       <select id="q1">
-        <option value="3">3：多め（八王子野猿街道2店、府中店など）</option>
+        <option value="3">3：多め</option>
         <option value="2" selected>2：普通</option>
-        <option value="1">1：少な目（三田本店、新宿歌舞伎町店など）</option>
+        <option value="1">1：少なめ</option>
       </select>
 
       <div class="q">設問2. 普通のラーメン屋でどのくらい食べるか</div>
@@ -46,7 +62,7 @@
       <select id="q3">
         <option value="4">4：多め</option>
         <option value="3" selected>3：普通</option>
-        <option value="2">2：少な目</option>
+        <option value="2">2：少なめ</option>
         <option value="1">1：いらない</option>
       </select>
 
@@ -54,7 +70,7 @@
       <select id="q4">
         <option value="4" selected>4：多め</option>
         <option value="3">3：普通</option>
-        <option value="2">2：少な目</option>
+        <option value="2">2：少なめ</option>
         <option value="1">1：いらない</option>
       </select>
 
@@ -62,7 +78,7 @@
       <select id="q5">
         <option value="4" selected>4：多め</option>
         <option value="3">3：普通</option>
-        <option value="2">2：少な目</option>
+        <option value="2">2：少なめ</option>
         <option value="1">1：いらない</option>
       </select>
 
@@ -74,8 +90,8 @@
       </select>
 
       <div class="row" style="margin-top:14px;">
-        <button id="run">提案を出す</button>
-        <span class="muted">※結果は下に表示されます</span>
+        <button id="run">結果を出力</button>
+        <span class="muted">※テキストは下に表示されます</span>
       </div>
     </div>
 
@@ -84,14 +100,14 @@
       <div id="out"></div>
     </div>
 
-    <div class="card">
+    <!-- <div class="card">
       <h2 style="margin-top:0;">仕様メモ</h2>
       <ul>
         <li>食券：設問1（列）×設問2（行）の表で決定</li>
         <li>ヤサイ：設問4に加えて、設問1×設問2の表で補正（指定の対応表どおり）</li>
         <li>コール特例：設問3〜5が全て4→「全マシ」、全て2→「全部少なめ」、全て1→「全抜き」</li>
       </ul>
-    </div>
+    </div> -->
   </div>
 
   <script>
@@ -228,6 +244,10 @@
       const call = buildCall(q1, q2, q3, q4, q5, q6);
 
       const html = `
+        <div><strong>購入する食券：</strong>${ticket}</div>
+        <div><strong>コール：</strong>${call || "（なし）"}</div>
+        <hr />
+
         <div class="muted">入力（数値）</div>
         <ul>
           <li>設問1（店の量）：<span class="mono">${q1}</span></li>
@@ -237,11 +257,7 @@
           <li>設問5（アブラ）：<span class="mono">${q5}</span></li>
           <li>設問6（カラメ）：<span class="mono">${q6}</span></li>
         </ul>
-        <hr />
-        <div><strong>購入する食券：</strong>${ticket}</div>
-        <div><strong>コール：</strong>${call || "（なし）"}</div>
         <p class="muted" style="margin-top:8px;">
-          ※ヤサイは設問4に加えて、設問1×2の表で「テキストなし」になる場合があります。
         </p>
       `;
       document.getElementById("out").innerHTML = html;
