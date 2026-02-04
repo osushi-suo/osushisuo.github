@@ -19,27 +19,110 @@
     .muted { color: #555; font-size: 0.95em; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     ul { margin: 6px 0 0 18px; }
+    
+/* ===== 静的Tier表 ===== */
+    .tier-section {
+      margin-top: 24px;
+      padding: 16px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+    }
+    
+    .tier-title { margin: 0 0 6px; }
+    .tier-desc { margin: 0 0 12px; color: #555; }
+
+    .tier-board { display: grid; gap: 10px; }
+    
+    .tier-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+    
+    .tier-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      border-radius: 10px;
+      border: 1px solid #bbb;
+      user-select: none;
+    }
+    
+    .tier-cells {
+      min-height: 52px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #bbb;
+      background: #fafafa;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-content: flex-start;
+    }
+    
+    .tier-chip {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #bbb;
+      background: #fff;
+      font-size: 14px;
+    }
+    
+    .tier-s { background: #ffe5e5; }
+    .tier-a { background: #fff2cc; }
+    .tier-b { background: #e6f4ff; }
+    .tier-c { background: #eeeeee; }
   </style>
 </head>
+  
 <body>
   <div class="wrap">
     <h1>二郎（系）の手引き</h1>
-    <p class="muted">設問に回答すると、あなたに合わせた「購入する食券」と「コール」を提案します。</p>
-
+    <p class="muted">あなたに合わせた「購入する食券」と「コール」を提案します。</p>
+    
+    <p class="notice">
+      <h3>注文方法</h3>
+    <ol>
+      <li>
+        <strong>食券を購入する</strong><br>
+        購入するタイミングは<br>
+        ・列に並ぶ前に購入<br>
+        ・入店する際に購入<br>
+        ・店員さんの指示があったら購入<br>
+        など店舗によって異なるので、事前に調べておきましょう<br>
+      </li>
+      <li>
+        <strong>麵の量を伝える</strong><br>
+        伝えるタイミングは以下のパターンが多いです<br>
+        ・食券を見せる<br>
+        ・店員さんに聞かれる<br>
+        ・席に案内された後、カウンターに食券を置く<br>
+        この時に「麺少なめ」や「麺半分」と伝えてください
+      </li>
+      <li>
+        <strong>コールを伝える</strong><br>
+        席で待っていると店員さんに<span style="color: #d32f2f;">「ニンニク入れますか」</span>と聞かれます。
+        この時にトッピングの好み（コール）を伝えてください<br>
+        基本的な量を希望する場合は「ニンニク」と伝えるだけで大丈夫です<br>
+      </li>
+</ol>
+    </p>
+    
     <p class="notice">
      <h3>注意事項</h3>
-      本サイトは製作者の主観で作成した目安になります
-      初めての人向けに制作したので、大ラーメンやマシマシは対象外です
-      「歴史を刻め」や「ラーメン大」ではコールの仕方が異なるので、注意してください
-      <span style="color: #d32f2f;">麺の量は食券を見せる際にに店員さんに伝えてください</span>
-      <span style="color: #d32f2f;">コールは「ニンニク入れますか」と言われたときに答えるようにしてください</span>
-      サイト改善のため、アンケートにご協力いただければ幸いです→https://forms.gle/5jd5PcMfiToTxVs7A
+      本サイトは製作者の主観で作成した目安になります<br>
+      初めての人向けに制作したので、大ラーメンやマシマシは対象外です<br>
+      「歴史を刻め」や「ラーメン大」ではコールの仕方が異なるので、注意してください<br>
+      サイト改善のため、アンケートにご協力いただければ幸いです→https://forms.gle/5jd5PcMfiToTxVs7A<br>
     </p>
     <p class="notice">
      <h3>ラーメンの量の目安（食べたことある店舗だけ）</h3>
-      多め：八王子野猿街道2店、府中店
-      普通：それ以外
-      少なめ：三田本店、新宿歌舞伎町店など
+      多め：二郎 八王子野猿街道2店、二郎 府中店<br>
+      普通：それ以外<br>
+      少なめ：二郎 三田本店、二郎 新宿歌舞伎町店、蓮爾 登戸店<br>
     </p>
     
     <div class="card">
@@ -53,8 +136,8 @@
       <div class="q">設問2. 普通のラーメン屋でどのくらい食べるか</div>
       <select id="q2">
         <option value="4">4：大盛は余裕</option>
-        <option value="3" selected>3：大盛で満腹</option>
-        <option value="2">2：普通盛で満腹</option>
+        <option value="3">3：大盛で満腹</option>
+        <option value="2" selecte>2：普通盛で満腹</option>
         <option value="1">1：普通盛でも残す</option>
       </select>
 
@@ -68,16 +151,16 @@
 
       <div class="q">設問4. ヤサイの量</div>
       <select id="q4">
-        <option value="4" selected>4：多め</option>
-        <option value="3">3：普通</option>
+        <option value="4">4：多め</option>
+        <option value="3" selecte>3：普通</option>
         <option value="2">2：少なめ</option>
         <option value="1">1：いらない</option>
       </select>
 
       <div class="q">設問5. アブラの量</div>
       <select id="q5">
-        <option value="4" selected>4：多め</option>
-        <option value="3">3：普通</option>
+        <option value="4"d>4：多め</option>
+        <option value="3" selecte>3：普通</option>
         <option value="2">2：少なめ</option>
         <option value="1">1：いらない</option>
       </select>
@@ -263,5 +346,59 @@
       document.getElementById("out").innerHTML = html;
     });
   </script>
+<!-- ===== Tier表（静的 / ここから）===== -->
+<section class="tier-section">
+  <h2 class="tier-title">個人的二郎（系）Tier表</h2>
+  <p class="tier-desc">※店名は自由に編集してください（S/A/B/Cは好みで増減OK）</p>
+
+  <div class="tier-board">
+    <!-- S -->
+    <div class="tier-row">
+      <div class="tier-label tier-s">S</div>
+      <div class="tier-cells">
+        <span class="tier-chip">ラーメン二郎　新潟店</span>
+        <span class="tier-chip">ラーメン二郎　八王子野猿街道店2</span>
+        <span class="tier-chip">ラーメン山　まさか（上島）</span>
+      </div>
+    </div>
+
+    <!-- A -->
+    <div class="tier-row">
+      <div class="tier-label tier-a">A</div>
+      <div class="tier-cells">
+        <span class="tier-chip">ラーメン二郎　横浜関内店</span>
+        <span class="tier-chip">ラーメン二郎　三田本店</span>
+        <span class="tier-chip">ラーメン荘　歴史を刻め　世田谷</span>
+        <span class="tier-chip">麺屋　みのわ（町田）</span>
+        <span class="tier-chip">蓮爾　登戸店</span>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="tier-row">
+      <div class="tier-label tier-b">B</div>
+      <div class="tier-cells">
+        <span class="tier-chip">ラーメン二郎　府中店</span>
+        <span class="tier-chip">ラーメン二郎　生田駅前店</span>
+        <span class="tier-chip">もみじ屋（明大前）</span>
+        <span class="tier-chip">自家製麺まる太（国分寺）</span>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="tier-row">
+      <div class="tier-label tier-c">C</div>
+      <div class="tier-cells">
+        <span class="tier-chip">ラーメン二郎　小滝橋通り店</span>
+        <span class="tier-chip">ラーメン池田屋　東京高田馬場店</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 追加する時はこの形で増やせます -->
+  <!-- <span class="tier-chip">ラーメン屋</span> -->
+</section>
+<!-- ===== Tier表（静的 / ここまで）===== -->
+
 </body>
 </html>
