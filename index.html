@@ -69,6 +69,8 @@
       border: 1px solid #bbb;
       background: #fff;
       font-size: 14px;
+      .tier-chip { text-decoration: none; color: inherit; }
+      .tier-chip:hover { opacity: 0.9; }
     }
     
     .tier-s { background: #ffadad; }
@@ -392,44 +394,47 @@
     <div class="tier-row">
       <div class="tier-label tier-s">S</div>
       <div class="tier-cells">
-        <span class="tier-chip">ラーメン二郎　新潟店</span>
-        <span class="tier-chip">ラーメン二郎　八王子野猿街道店2</span>
-        <span class="tier-chip">ラーメン山　まさか（上島）</span>
+        <a class="tier-chip" href="https://maps.app.goo.gl/Fdv7yeHBwqghazsF8" target="_blank" rel="noopener noreferrer">ラーメン二郎　新潟店</a>
+        <a class="tier-chip" href="https://maps.app.goo.gl/Wmg9pz3uJBocHRfW8" target="_blank" rel="noopener noreferrer">ラーメン二郎　八王子野猿街道店2</a>
+        <a class="tier-chip" href="https://maps.app.goo.gl/HjNu6G1rhM9PBEav7" target="_blank" rel="noopener noreferrer">ラーメン山　まさか（上島）</a>
       </div>
+
     </div>
 
     <!-- A -->
-    <div class="tier-row">
-      <div class="tier-label tier-a">A</div>
-      <div class="tier-cells">
-        <span class="tier-chip">ラーメン二郎　横浜関内店</span>
-        <span class="tier-chip">ラーメン二郎　三田本店</span>
-        <span class="tier-chip">ラーメン荘　歴史を刻め　世田谷</span>
-        <span class="tier-chip">麺屋　みのわ（柿生）</span>
-        <span class="tier-chip">蓮爾　登戸店</span>
-      </div>
-    </div>
+  <div class="tier-row">
+    <div class="tier-label tier-a">A</div>
+    <div class="tier-cells">
+      <a class="tier-chip" href="https://maps.app.goo.gl/s6XR8BDJd3W6D2o56" target="_blank" rel="noopener noreferrer">ラーメン二郎　横浜関内店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/QydqKCpofd7kCGbt6" target="_blank" rel="noopener noreferrer">ラーメン二郎　三田本店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/HWt9d5DtC5S2XXMm6" target="_blank" rel="noopener noreferrer">ラーメン荘　歴史を刻め　世田谷</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/8kfqbKSmxszRxS8p8" target="_blank" rel="noopener noreferrer">麺屋　みのわ（柿生）</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/fscfyerEWnpccMUP7" target="_blank" rel="noopener noreferrer">自家製麺まる太（国分寺）</a>
 
-    <!-- B -->
-    <div class="tier-row">
-      <div class="tier-label tier-b">B</div>
-      <div class="tier-cells">
-        <span class="tier-chip">ラーメン二郎　府中店</span>
-        <span class="tier-chip">ラーメン二郎　生田駅前店</span>
-        <span class="tier-chip">もみじ屋（明大前）</span>
-        <span class="tier-chip">自家製麺まる太（国分寺）</span>
-      </div>
-    </div>
-
-    <!-- C -->
-    <div class="tier-row">
-      <div class="tier-label tier-c">C</div>
-      <div class="tier-cells">
-        <span class="tier-chip">ラーメン二郎　小滝橋通り店</span>
-        <span class="tier-chip">ラーメン池田屋　東京高田馬場店</span>
-      </div>
     </div>
   </div>
+
+    <!-- B -->
+  <div class="tier-row">
+    <div class="tier-label tier-b">B</div>
+    <div class="tier-cells">
+      <a class="tier-chip" href="https://maps.app.goo.gl/npwwyMeX8g7n7JnA8" target="_blank" rel="noopener noreferrer">ラーメン二郎　府中店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/bpd8jY4ak1iqt6u49" target="_blank" rel="noopener noreferrer">ラーメン二郎　生田駅前店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/HrSE3RHohjVu67Pu9" target="_blank" rel="noopener noreferrer">もみじ屋（明大前）</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/Agq6nstbafsgp68f9" target="_blank" rel="noopener noreferrer">蓮爾　登戸店</a>
+    </div>
+  </div>
+
+
+    <!-- C -->
+  <div class="tier-row">
+    <div class="tier-label tier-c">C</div>
+    <div class="tier-cells">
+      <a class="tier-chip" href="https://maps.app.goo.gl/Edm5XcLgZcu1c2fAA" target="_blank" rel="noopener noreferrer">ラーメン二郎　小滝橋通り店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/NLGKm3ASCr2ZAYTF9" target="_blank" rel="noopener noreferrer">ラーメン池田屋　東京高田馬場店</a>
+    </div>
+  </div>
+
 
   <!-- 追加する時はこの形で増やせます -->
   <!-- <span class="tier-chip">ラーメン屋</span> -->
@@ -437,7 +442,7 @@
 <!-- ===== Tier表（静的 / ここまで）===== -->
 <div class="card">
   <h2>ご意見フォーム</h2>
-  <iframe
+  <iframe>
     src="https://forms.gle/5jd5PcMfiToTxVs7A"
     width="100%"
     height="900"
