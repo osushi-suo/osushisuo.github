@@ -131,9 +131,11 @@
       </li>
 </ol>
     </p>
+    
     <hr>
-        <p class="notice">
-          <h3>用語解説</h3>
+    
+    <p class="notice">
+      <h3>用語解説</h3>
     <ol>
       <li>
         <strong>麺</strong><br>
@@ -162,8 +164,16 @@
         醤油ダレが追加され、味が濃くなる<br>
         <span style="color: #ff8c00;">コール方法：カラメ／コールなし／カラメ少なめ（？）</span><br>
       </li>
+      <li>
+        <strong>乳化/非乳化</strong><br>
+        スープの状態を示す言葉<br>
+        乳化は、スープに脂がとけ、まろやかな口当たりが特徴<br>
+        非乳化は、スープと脂が分離しており、カエシがダイレクトに届くキレのある味が特徴<br>
+      </li>
     </ol>
+    
     <hr>
+    
     </p>
     <p class="notice">
      <h3>注意事項</h3>
@@ -173,9 +183,9 @@
     <p class="notice">
       <hr>
      <h3>量の目安（食べたことある店舗だけ）</h3>
-      多め：二郎 八王子野猿街道2店、二郎 府中店<br>
+      多め：二郎 八王子野猿街道2店、府中店、ひばりが丘店<br>
       普通：それ以外<br>
-      少なめ：二郎 三田本店、二郎 新宿歌舞伎町店、蓮爾 登戸店<br>
+      少なめ：二郎 三田本店、新宿歌舞伎町店、目黒店、蓮爾 登戸店<br>
     </p>
     
     <div class="card">
@@ -246,164 +256,147 @@
     </div> -->
   </div>
 
-  <script>
-    // ===== ユーティリティ =====
-    const v = (id) => parseInt(document.getElementById(id).value, 10);
+<script>
+  // ===== ユーティリティ =====
+  const v = (id) => parseInt(document.getElementById(id).value, 10);
 
-    // ===== 実装2: 食券（設問1×設問2） =====
-    // 設問1が「列」、設問2が「行」
-    // q1: 3/2/1, q2: 4/3/2/1
-    const ticketTable = {
-      // row = q2
-      4: { 3: "小ラーメン",             2: "小ラーメン",             1: "小ラーメン" },
-      3: { 3: "小ラーメン麺少なめ",     2: "小ラーメン",             1: "小ラーメン" },
-      2: { 3: "ミニラーメン麺少なめor半分", 2: "ミニラーメン麺少なめ", 1: "ミニラーメン麺少なめ" },
-      1: { 3: "ミニラーメン麺半分",     2: "ミニラーメン麺半分",     1: "ミニラーメン少なめor半分" },
-    };
+  // ★追加：選択肢の表示文字（例「2：普通」）を取得
+  const t = (id) => {
+    const el = document.getElementById(id);
+    return el.options[el.selectedIndex].text;
+  };
 
-    function decideTicket(q1, q2) {
-      // q2行 -> q1列
-      const row = ticketTable[q2];
-      if (!row || !row[q1]) return "（食券が決められませんでした）";
-      return row[q1];
-    }
+  // ===== 実装2: 食券（設問1×設問2） =====
+  const ticketTable = {
+    4: { 3: "小ラーメン",                 2: "小ラーメン",                 1: "小ラーメン" },
+    3: { 3: "小ラーメン麺少なめ",         2: "小ラーメン",                 1: "小ラーメン" },
+    2: { 3: "ミニラーメン麺少なめor半分", 2: "ミニラーメン麺少なめ",       1: "ミニラーメン麺少なめ" },
+    1: { 3: "ミニラーメン麺半分",         2: "ミニラーメン麺半分",         1: "ミニラーメン少なめor半分" },
+  };
 
-    // ===== 実装2: ニンニク（設問3） =====
-    const ninnikuText = {
-      4: "ニンニクマシ",
-      3: "ニンニク",
-      2: "ニンニク少なめ",
-      1: "ニンニク抜き",
-    };
+  function decideTicket(q1, q2) {
+    const row = ticketTable[q2];
+    if (!row || !row[q1]) return "（食券が決められませんでした）";
+    return row[q1];
+  }
 
-    // ===== 実装2: ヤサイ（設問4 + 設問1×2） =====
-    // 指定表に従い「テキストなし」もあり得る
-    const yasaiTableWhen4 = {
-      // q4=4 のとき（多め）
-      // row=q2, col=q1
-      4: { 3: "ヤサイ",         2: "ヤサイ",         1: "ヤサイ" },
-      3: { 3: "",               2: "",               1: "" },
-      2: { 3: "ヤサイ少なめ",   2: "",   1: "" },
-      1: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "" },
-    };
+  // ===== 実装2: ニンニク（設問3） =====
+  const ninnikuText = { 4:"ニンニクマシ", 3:"ニンニク", 2:"ニンニク少なめ", 1:"ニンニク抜き" };
 
-    const yasaiTableWhen3 = {
-      // q4=3 のとき（普通）
-      // row=q2, col=q1
-      4: { 3: "",               2: "",               1: "" },
-      3: { 3: "ヤサイ少なめ",   2: "",   1: "" },
-      2: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "ヤサイ少なめ" },
-      1: { 3: "ヤサイ少なめ",   2: "ヤサイ少なめ",   1: "ヤサイ少なめ" },
-    };
+  // ===== 実装2: ヤサイ（設問4 + 設問1×2） =====
+  const yasaiTableWhen4 = {
+    4: { 3:"ヤサイ(自己責任)",       2:"ヤサイ",       1:"ヤサイ" },
+    3: { 3:"",             2:"",             1:"" },
+    2: { 3:"ヤサイ少なめ", 2:"",             1:"" },
+    1: { 3:"ヤサイ少なめ", 2:"ヤサイ少なめ", 1:"" },
+  };
 
-    function decideYasai(q1, q2, q4) {
-      if (q4 === 2) return "ヤサイ少なめ";
-      if (q4 === 1) return "ヤサイ抜き";
+  const yasaiTableWhen3 = {
+    4: { 3:"",             2:"",             1:"" },
+    3: { 3:"ヤサイ少なめ", 2:"",             1:"" },
+    2: { 3:"ヤサイ少なめ", 2:"ヤサイ少なめ", 1:"ヤサイ少なめ" },
+    1: { 3:"ヤサイ少なめ", 2:"ヤサイ少なめ", 1:"ヤサイ少なめ" },
+  };
 
-      if (q4 === 4) {
-        const row = yasaiTableWhen4[q2];
-        return (row && (q1 in row)) ? row[q1] : "";
-      }
-      if (q4 === 3) {
-        const row = yasaiTableWhen3[q2];
-        return (row && (q1 in row)) ? row[q1] : "";
-      }
-      return "";
-    }
+  function decideYasai(q1, q2, q4) {
+    if (q4 === 2) return "ヤサイ少なめ";
+    if (q4 === 1) return "ヤサイ抜き";
+    if (q4 === 4) return (yasaiTableWhen4[q2] && (q1 in yasaiTableWhen4[q2])) ? yasaiTableWhen4[q2][q1] : "";
+    if (q4 === 3) return (yasaiTableWhen3[q2] && (q1 in yasaiTableWhen3[q2])) ? yasaiTableWhen3[q2][q1] : "";
+    return "";
+  }
 
-    // ===== 実装2: アブラ（設問5） =====
-    const aburaText = {
-      4: "アブラ",
-      3: "",
-      2: "アブラ少なめ",
-      1: "アブラ抜き",
-    };
+  // ===== 実装2: アブラ（設問5） =====
+  const aburaText = { 4:"アブラ", 3:"", 2:"アブラ少なめ", 1:"アブラ抜き" };
 
-    // ===== 実装2: カラメ（設問6） =====
-    const karameText = {
-      3: "カラメ",
-      2: "",
-      1: "カラメ少なめ",
-    };
+  // ===== 実装2: カラメ（設問6） =====
+  const karameText = { 3:"カラメ", 2:"", 1:"カラメ少なめ" };
 
-    // ===== 実装3: コールの組み立て（特例あり） =====
-    function buildCall(q1, q2, q3, q4, q5, q6) {
-      // 特例：設問3〜5が同一
-      if (q3 === 4 && q4 === 4 && q5 === 4) {
-        // 全マシ（ただしカラメは別枠で足す）
-        const parts = ["全マシ"];
-        const k = karameText[q6] || "";
-        if (k) parts.push(k);
-        return parts.join("");
-      }
-      if (q3 === 2 && q4 === 2 && q5 === 2) {
-        const parts = ["全部少なめ"];
-        const k = karameText[q6] || "";
-        if (k) parts.push(k);
-        return parts.join("");
-      }
-      if (q3 === 1 && q4 === 1 && q5 === 1) {
-        const parts = ["全抜き"];
-        const k = karameText[q6] || "";
-        if (k) parts.push(k);
-        return parts.join("");
-      }
-
-      // 通常：ニンニク + ヤサイ（補正） + アブラ + カラメ を「テキストなし」は除いて連結
-      const parts = [];
-
-      const n = ninnikuText[q3] || "";
-      if (n) parts.push(n);
-
-      const y = decideYasai(q1, q2, q4); // q4=3,4は表で""になり得る
-      if (y) parts.push(y);
-
-      const a = aburaText[q5] || "";
-      if (a) parts.push(a);
-
+  // ===== 実装3: コールの組み立て（特例あり） =====
+  function buildCall(q1, q2, q3, q4, q5, q6) {
+    if (q3 === 4 && q4 === 4 && q5 === 4) {
+      const parts = ["全マシ"];
       const k = karameText[q6] || "";
       if (k) parts.push(k);
-
+      return parts.join("");
+    }
+    if (q3 === 2 && q4 === 2 && q5 === 2) {
+      const parts = ["全部少なめ"];
+      const k = karameText[q6] || "";
+      if (k) parts.push(k);
+      return parts.join("");
+    }
+    if (q3 === 1 && q4 === 1 && q5 === 1) {
+      const parts = ["全抜き"];
+      const k = karameText[q6] || "";
+      if (k) parts.push(k);
       return parts.join("");
     }
 
-    // ===== UI: 実行 =====
-    document.getElementById("run").addEventListener("click", () => {
-      const q1 = v("q1");
-      const q2 = v("q2");
-      const q3 = v("q3");
-      const q4 = v("q4");
-      const q5 = v("q5");
-      const q6 = v("q6");
+    const parts = [];
+    const n = ninnikuText[q3] || "";
+    if (n) parts.push(n);
 
-      const ticket = decideTicket(q1, q2);
-      const call = buildCall(q1, q2, q3, q4, q5, q6);
+    const y = decideYasai(q1, q2, q4);
+    if (y) parts.push(y);
 
-      const html = `
-        <div><strong>購入する食券：</strong>${ticket}</div>
-        <div><strong>コール：</strong>${call || "（なし）"}</div>
-        <hr />
+    const a = aburaText[q5] || "";
+    if (a) parts.push(a);
 
-        <div class="muted">入力（数値）</div>
-        <ul>
-          <li>設問1（店の量）：<span class="mono">${q1}</span></li>
-          <li>設問2（普段の食べる量）：<span class="mono">${q2}</span></li>
-          <li>設問3（ニンニク）：<span class="mono">${q3}</span></li>
-          <li>設問4（ヤサイ）：<span class="mono">${q4}</span></li>
-          <li>設問5（アブラ）：<span class="mono">${q5}</span></li>
-          <li>設問6（カラメ）：<span class="mono">${q6}</span></li>
-        </ul>
-        <p class="muted" style="margin-top:8px;">
-        </p>
-      `;
-      document.getElementById("out").innerHTML = html;
-    });
-  </script>
-<!-- ===== Tier表（静的 / ここから）===== -->
+    const k = karameText[q6] || "";
+    if (k) parts.push(k);
+
+    return parts.join("");
+  }
+
+  // ===== UI: 実行 =====
+  document.getElementById("run").addEventListener("click", () => {
+    const q1 = v("q1");
+    const q2 = v("q2");
+    const q3 = v("q3");
+    const q4 = v("q4");
+    const q5 = v("q5");
+    const q6 = v("q6");
+
+    // ★追加：表示用テキスト（例「2：普通」）も取得
+    const q1Text = t("q1");
+    const q2Text = t("q2");
+    const q3Text = t("q3");
+    const q4Text = t("q4");
+    const q5Text = t("q5");
+    const q6Text = t("q6");
+
+    const ticket = decideTicket(q1, q2);
+    const call = buildCall(q1, q2, q3, q4, q5, q6);
+
+    // ★変更：結果に「何を選んだか」を表示
+    const html = `
+      <div><strong>購入する食券：</strong>${ticket}</div>
+      <div><strong>コール：</strong>${call || "（なし）"}</div>
+      <hr />
+
+      <div class="muted"><strong>選択内容</strong></div>
+      <ul>
+        <li>行く店舗（量）：<span class="mono">${q1Text}</span></li>
+        <li>普段の食べる量：<span class="mono">${q2Text}</span></li>
+        <li>ニンニクの量：<span class="mono">${q3Text}</span></li>
+        <li>ヤサイの量：<span class="mono">${q4Text}</span></li>
+        <li>アブラの量：<span class="mono">${q5Text}</span></li>
+        <li>味の濃さ（カラメ）：<span class="mono">${q6Text}</span></li>
+      </ul>
+    `;
+    document.getElementById("out").innerHTML = html;
+  });
+</script>
+
+  
+<!-- ===== Tier表　===== -->
 <section class="tier-section">
   <h2 class="tier-title">好みの二郎（系）店舗</h2>
   <p class="muted">
-      店舗名を押すとGoogleMapのページに飛びます<br>
+    店舗名を押すとGoogleMapのページに飛びます<br>
+    製作者は非乳化のほうが好みです<br>
+
     </p>
 
   <div class="tier-board">
@@ -448,6 +441,7 @@
     <div class="tier-label tier-c">C</div>
     <div class="tier-cells">
       <a class="tier-chip" href="https://maps.app.goo.gl/Edm5XcLgZcu1c2fAA" target="_blank" rel="noopener noreferrer">ラーメン二郎　小滝橋通り店</a>
+      <a class="tier-chip" href="https://maps.app.goo.gl/ME8cvRDAgbFdANoZ6" target="_blank" rel="noopener noreferrer">ラーメン二郎 ひばりヶ丘駅前店</a>
       <a class="tier-chip" href="https://maps.app.goo.gl/NLGKm3ASCr2ZAYTF9" target="_blank" rel="noopener noreferrer">ラーメン池田屋　東京高田馬場店</a>
     </div>
   </div>
